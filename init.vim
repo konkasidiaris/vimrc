@@ -30,12 +30,15 @@ set colorcolumn=80
 
 " this will install vim-plug if not installed
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
-    silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall
 endif
     
 call plug#begin('~/.vim/plugged')
+
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
 " fuzzy finder 
 Plug 'nvim-telescope/telescope.nvim'
 " color theme
@@ -55,3 +58,20 @@ Plug 'maxmellon/vim-jsx-pretty'
 call plug#end()
 
 colorscheme gruvbox
+
+" setup a leader key
+let mapleader = " "
+
+"n normal no no re recursive execution map map
+nnoremap <leader>ps :lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ") })<CR>
+
+fun! TrimWhitespace()
+  let l:save = winsaveview()
+  keeppatterns %s/\s\+$//e
+  call winrestview(l:save)
+endfun
+
+augroup KON_KAS
+  autocmd!
+  autocmd BufWritePre * :call TrimWhitespace()
+augroup END
